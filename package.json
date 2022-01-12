@@ -1,11 +1,12 @@
 {
   "name": "mesto-xpress",
   "version": "1.0.0",
-  "description": "",
+  "description": "`/routes` — папка с файлами роутера  \r `/controllers` — папка с файлами контроллеров пользователя и карточки   \r `/models` — папка с файлами описания схем пользователя и карточки",
   "main": "index.js",
   "scripts": {
-    "start": "app.js",
-    "dev": "nodemon app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "npx eslint ."
   },
   "keywords": [],
   "author": "",
@@ -18,10 +19,19 @@
   "devDependencies": {
     "eslint": "^8.6.0",
     "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "nodemon": "^2.0.15"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SashaAnshukov/express-mesto.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SashaAnshukov/express-mesto/issues"
+  },
+  "homepage": "https://github.com/SashaAnshukov/express-mesto#readme"
 }

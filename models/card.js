@@ -1,3 +1,4 @@
+// файл схемы и модели карточки
 const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
@@ -17,7 +18,7 @@ const cardSchema = new mongoose.Schema({
     ref: 'Author'
   },
   likes: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Array,
     default: []
   },
   createdAt: {

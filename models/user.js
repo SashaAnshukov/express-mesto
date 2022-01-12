@@ -1,3 +1,4 @@
+// файл схемы и модели пользователя
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({

@@ -1,22 +1,32 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const path = require ('path')
-const bodyParser = require('body-parser')
-
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const path = require ('path');
+//const bodyParser = require('body-parser');
+const userRoutes = require('./routes/users'); // импортируем роуты пользователя
+const cardRoutes = require('./routes/cards'); // импортируем роуты карточек
 
 const { PORT = 3000 } = process.env;
 
-const app = express();
-
-app.get('/', (request, response) => {
+/*app.get('/', (request, response) => {
     response.send('wazzzaap');
-});
+});*/
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false
+app.use(express.json());
+app.use('/', userRoutes); // запускаем импортированные роуты
+app.use((req, res, next) => {
+  req.user = {
+    _id: '61db06f1a62735aa21a5ee77' // временное решение
+  };
+
+  next();
 });
+app.use('/', cardRoutes); // запускаем импортированные роуты
+
+
+mongoose.connect('mongodb://localhost:27017/mestodb');
+
+
 
 app.listen(PORT, () => {
     // Если всё работает, консоль покажет, какой порт приложение слушает
