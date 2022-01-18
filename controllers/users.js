@@ -1,5 +1,4 @@
 //файл контроллеров польхователя. Функция, которая выполняет создание, чтение, обновление или удаление документа.
-const res = require('express/lib/response');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
@@ -18,13 +17,22 @@ module.exports.getUserId = (request, response, next) => {
   const idUser = request.params.id;
   User.findById(idUser)
     .then(userFound => {
-      if(!userFound) {
-        //return response.status(404).end();
+      if (!userFound) {
         throw new NotFoundError(`Запрашиваемый пользователь с id ${idUser} не найден`);
       }
       return response.status(200).json(userFound);
     })
-    .catch(error => next(error));
+    .catch(error => {
+      if (error.name === 'ValidationError') {
+        next(new BadRequestError(`${Object.values(error.errors).map((error) => error.message).join(', ')}`));
+      }
+      else if (error.name === 'CastError') {
+        next(new BadRequestError(`Переданный id ${idUser} не корректен`));
+      }
+      else {
+        next(error); // Для всех остальных ошибок
+      }
+    });
 };
 
 // создание пользователя
@@ -44,7 +52,7 @@ module.exports.createUser = (request, response, next) => {
       if (error.name === 'ValidationError') {
         next(new BadRequestError(`${Object.values(error.errors).map((error) => error.message).join(', ')}`));
       }
-      else if (error.code === 11000) {
+      else if (error.code === 409) {
         next(new ConflictError('Пользователь с таким именем уже существует'));
       }
       else {
@@ -56,13 +64,8 @@ module.exports.createUser = (request, response, next) => {
 // обновление профиля
 module.exports.updateUser = (request, response) => {
   return User.findByIdAndUpdate(request.user._id,
-    {
-      name: request.body.name, about: request.body.about
-    },
-    {
-      new: true, // обработчик then получит на вход обновлённую запись
-      upsert: true // если пользователь не найден, он будет создан
-    }
+    { name: request.body.name, about: request.body.about },
+    { new: true }, // обработчик then получит на вход обновлённую запись
   )
   .then(user => response.send({ data: user }))
   .catch(error => {
@@ -77,13 +80,8 @@ module.exports.updateUser = (request, response) => {
 // обновление аватара
 module.exports.updateAvatar = (request, response) => {
   return User.findByIdAndUpdate(request.user._id,
-    {
-      avatar: request.body.avatar
-    },
-    {
-      new: true, // обработчик then получит на вход обновлённую запись
-      upsert: true // если пользователь не найден, он будет создан
-    }
+    { avatar: request.body.avatar },
+    { new: true }, // обработчик then получит на вход обновлённую запись
   )
   .then(user => response.send({ data: user }))
   .catch(error => {

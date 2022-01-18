@@ -1,12 +1,10 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const path = require ('path');
 //const bodyParser = require('body-parser');
 const userRoutes = require('./routes/users'); // импортируем роуты пользователя
 const cardRoutes = require('./routes/cards'); // импортируем роуты карточек
 const errorHandler = require('./middleware/error-handler');
-const BadRequestError = require('./errors/bad-request-error');
 const NotFoundError = require('./errors/not-found-error');
 
 const { PORT = 3000 } = process.env;
@@ -19,11 +17,11 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '61db06f1a62735aa21a5ee77' // временное решение
+    _id: '61e42e8a7b25ff10853f57be' // временное решение
   };
-
   next();
 });
+
 app.use('/', userRoutes); // запускаем импортированные роуты
 app.use('/', cardRoutes); // запускаем импортированные роуты
 

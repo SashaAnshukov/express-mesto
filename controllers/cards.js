@@ -13,15 +13,21 @@ module.exports.getCards = (request, response) => {
 // удаляет карточку по _id
 module.exports.deleteCard = (request, response, next) => {
   const idCard = request.params.id;
-  return Card.findByIdAndRemove(idcard)
+  return Card.findByIdAndRemove(idCard)
   .then(cardFound => {
-    if(!cardFound) {
-      //return response.status(404).end();
+    if (!cardFound) {
       throw new NotFoundError(`Карточка с id ${idCard} не найдена`);
     }
     return response.status(200).json(cardFound);
   })
-  .catch(error => next(error));
+  .catch(error => {
+    if (error.name === 'CastError') {
+      next(new BadRequestError(`Переданный id ${idCard} не корректен`));
+    }
+    else {
+      next(error); // Для всех остальных ошибок
+    }
+  });
 };
 
 // создаёт карточку
@@ -40,20 +46,35 @@ module.exports.createCard = (request, response, next) => {
     });
 };
 
-module.exports.likeCard = (request, response) => {Card.findByIdAndUpdate(
+module.exports.likeCard = (request, response, next) => { Card.findByIdAndUpdate(
   request.params.id,
   { $addToSet: { likes: request.user._id } }, // добавить _id в массив, если его там нет
   { new: true },
   )
   .then(card => response.status(201).send(card)) // вернём записанные в базу данные
-  .catch(err => response.status(500).send({ message: 'Произошла ошибка' })); // данные не записались, вернём ошибку
+  .catch(error => {
+    if (error.name === 'CastError') {
+      next(new BadRequestError(`Переданный id ${request.params.id} не корректен`));
+    }
+    else {
+      next(error); // Для всех остальных ошибок
+    }
+  });
 }
 
-module.exports.dislikeCard = (request, response) => {Card.findByIdAndUpdate(
+module.exports.dislikeCard = (request, response, next) => { Card.findByIdAndUpdate(
+  //console.log(request.user._id),
   request.params.id,
   { $pull: { likes: request.user._id } }, // убрать _id из массива
   { new: true },
   )
   .then(card => response.status(201).send(card)) // вернём записанные в базу данные
-  .catch(err => response.status(500).send({ message: 'Произошла ошибка' })); // данные не записались, вернём ошибку
+  .catch(error => {
+    if (error.name === 'CastError') {
+      next(new BadRequestError(`Переданный id ${request.params.id} не корректен`));
+    }
+    else {
+      next(error); // Для всех остальных ошибок
+    }
+  });
 }
