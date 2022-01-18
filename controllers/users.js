@@ -62,7 +62,7 @@ module.exports.createUser = (request, response, next) => {
 };
 
 // обновление профиля
-module.exports.updateUser = (request, response) => {
+module.exports.updateUser = (request, response, next) => {
   return User.findByIdAndUpdate(request.user._id,
     { name: request.body.name, about: request.body.about },
     { new: true }, // обработчик then получит на вход обновлённую запись
@@ -78,7 +78,7 @@ module.exports.updateUser = (request, response) => {
 };
 
 // обновление аватара
-module.exports.updateAvatar = (request, response) => {
+module.exports.updateAvatar = (request, response, next) => {
   return User.findByIdAndUpdate(request.user._id,
     { avatar: request.body.avatar },
     { new: true }, // обработчик then получит на вход обновлённую запись
