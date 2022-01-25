@@ -6,25 +6,25 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 30,
   },
   link: {
     type: String,
-    required: true
+    required: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Author'
+    ref: 'Author',
   },
   likes: {
     type: Array,
-    default: []
+    default: [],
   },
   createdAt: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
 
 // создаём модель и экспортируем её
