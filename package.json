@@ -12,9 +12,14 @@
   "author": "Саша Аншуков",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
+    "celebrate": "^15.0.1",
+    "cookie-parser": "^1.4.6",
     "express": "^4.17.2",
-    "mongoose": "^6.1.5"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.5",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "eslint": "^8.6.0",
