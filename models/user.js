@@ -1,4 +1,4 @@
-// файл схемы и модели пользователя
+/// файл схемы и модели пользователя
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
 const isUrl = require('validator/lib/isUrl');
