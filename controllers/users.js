@@ -7,9 +7,9 @@ const BadRequestError = require('../errors/bad-request-error');
 const ConflictError = require('../errors/conflict-error');
 
 // возвращает всех пользователей
-module.exports.getUsers = (request, response) => User.find({})
+module.exports.getUsers = (request, response, next) => User.find({})
   .then((users) => response.status(200).send({ data: users }))
-  .catch(() => response.status(500).send({ message: 'Произошла ошибка' }));
+  .catch(next);
 
 // возвращает пользователя по _id
 module.exports.getUserId = (request, response, next) => {
@@ -80,8 +80,9 @@ module.exports.login = (request, response, next) => {
 
 module.exports.signout = (req, res) => {
   res
-    .cookie('jwt', '')
-    .end();
+    .status(200)
+    .clearCookie('jwt')
+    .send({ message: 'Выход' });
 };
 
 // информация о текущем пользователе
@@ -97,13 +98,7 @@ module.exports.getUser = (request, response, next) => {
       }
       throw new NotFoundError('Пользователь по указанному id не найден');
     })
-    .catch((error) => {
-      if (error.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный id пользователя'));
-      } else {
-        next(error);
-      }
-    });
+    .catch(next);
 };
 
 // обновление профиля
@@ -111,7 +106,7 @@ module.exports.updateUser = (request, response, next) => User.findByIdAndUpdate(
   // console.log(request.user._id),
   request.user._id,
   { name: request.body.name, about: request.body.about },
-  { new: true }, // обработчик then получит на вход обновлённую запись
+  { new: true, runValidators: true }, // обработчик then получит на вход обновлённую запись
 )
   .then((userUpdate) => {
     if (!userUpdate) {
@@ -131,7 +126,7 @@ module.exports.updateUser = (request, response, next) => User.findByIdAndUpdate(
 module.exports.updateAvatar = (request, response, next) => User.findByIdAndUpdate(
   request.user._id,
   { avatar: request.body.avatar },
-  { new: true }, // обработчик then получит на вход обновлённую запись
+  { new: true, runValidators: true }, // обработчик then получит на вход обновлённую запись
 )
   .then((avatarUpdate) => {
     if (!avatarUpdate) {

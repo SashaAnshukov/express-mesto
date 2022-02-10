@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const auth = require('../middleware/auth');
+const validateURL = require('../middleware/methods');
 
 const {
   getUsers, login, createUser, getUser, getUserId, updateUser, updateAvatar, signout,
@@ -14,7 +15,7 @@ router.post(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string(),
+      avatar: Joi.string().required().custom(validateURL, 'custom validation'),
       email: Joi.string().required().email(),
       password: Joi.string().required(),
     }),
@@ -40,10 +41,40 @@ router.use(auth);
 
 // роуты, требующие авторизации
 router.get('/users', getUsers);
-router.get('/users/:id', getUserId);
+
 router.get('/users/me', getUser);
-router.patch('/users/me', updateUser);
-router.patch('/users/me/avatar', updateAvatar);
+
+router.get(
+  '/users/:id',
+  // валидация
+  celebrate({
+    params: Joi.object().keys({
+      id: Joi.string().hex().length(24),
+    }),
+  }),
+  getUserId,
+);
+
+router.patch(
+  '/users/me',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+    }),
+  }),
+  updateUser,
+);
+router.patch(
+  '/users/me/avatar',
+  celebrate({
+    body: Joi.object().keys({
+      avatar: Joi.string().required().custom(validateURL, 'custom validation'),
+    }),
+  }),
+  updateAvatar,
+);
+
 // router.post('/users', createUser);
 // router.get('/secured', secured);
 module.exports = router;

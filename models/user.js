@@ -1,9 +1,8 @@
 /// файл схемы и модели пользователя
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
-const isUrl = require('validator/lib/isUrl');
+const isUrl = require('validator/lib/isURL');
 const bcrypt = require('bcryptjs');
-const NotFoundError = require('../errors/not-found-error');
 const UnauthorizedError = require('../errors/unauthorized-error');
 
 const userSchema = new mongoose.Schema({
@@ -24,6 +23,7 @@ const userSchema = new mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (v) => isUrl(v),
+      message: 'Неправильный формат cсылки',
     },
   },
   email: {
@@ -49,7 +49,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       // console.log(email, user.email, password, user.password)
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        throw new UnauthorizedError('Пользователь не найден, необходима авторизация');
       }
 
       return bcrypt

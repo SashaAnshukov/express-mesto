@@ -1,6 +1,6 @@
 // файл схемы и модели карточки
 const mongoose = require('mongoose');
-const isUrl = require('validator/lib/isUrl');
+const isUrl = require('validator/lib/isURL');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -19,7 +19,7 @@ const cardSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Author',
+    ref: 'user',
   },
   likes: {
     type: Array,

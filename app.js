@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const userRoutes = require('./routes/users'); // импортируем роуты пользователя
 const cardRoutes = require('./routes/cards'); // импортируем роуты карточек
 const errorHandler = require('./middleware/error-handler');
@@ -23,7 +24,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use((req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
-app.use(errorHandler);
+app.use(errors()); // обработчик ошибок celebrate
+app.use(errorHandler); // централизованный обработчик ошибок (500 )
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
