@@ -18,7 +18,7 @@
 ## 🚀 Инструкция по развёртыванию:
 * Клонируйте репозиторий на свой компьютер через командную строку.
 ```
-git clone [https://github.com/SashaAnshukov/react-mesto-auth.git](https://github.com/SashaAnshukov/react-mesto-auth.git)
+git clone https://github.com/SashaAnshukov/react-mesto-auth.git
 ```
 * Перейдите в локальную папку с проектом
 * Установите зависимости
